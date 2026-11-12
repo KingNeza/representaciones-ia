@@ -1,5 +1,21 @@
 # Representaciones IA
 
+> **English summary.** A team of assistant agents for studying how generative image models represent Mexican women. A collaborative project of the MA in Digital Communication and Humanities, Universidad del Claustro de Sor Juana (Mexico City).
+>
+> **How it works**
+> 1. One agent helps formulate the research question from a written protocol.
+> 2. Prompts are built by plain code (no model), and a second agent reviews them.
+> 3. Nothing is generated until a human approval is recorded in the protocol.
+> 4. Images are generated locally (Z-Image Turbo via mflux), and every attempt is logged; none is deleted.
+> 5. A vision agent (qwen3-vl) produces a visual contrast, researchers code the images by hand in Excel, and Cohen's kappa measures agreement.
+>
+> **Design principles:** agents propose, review and contrast; the researcher decides, describes and interprets. Whatever can be done without a model is done without one. Everything runs locally by default, and any use of an online route is recorded on each image.
+>
+> The documentation below is in Spanish.
+
+---
+
+
 Equipo de agentes auxiliares para estudiar representaciones de mujeres mexicanas en imágenes generativas.
 Proyecto colaborativo de la Maestría en Comunicación y Humanidades Digitales · Universidad del Claustro de Sor Juana.
 
