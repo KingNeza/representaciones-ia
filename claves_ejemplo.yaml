@@ -1,0 +1,7 @@
+# Claves para los servicios por internet (planes B y C).
+# 1. Copia este archivo y llama a la copia  claves.yaml
+# 2. Pega tu clave entre las comillas.
+# claves.yaml es personal: no lo compartas ni lo incluyas en zips o repositorios.
+
+pollinations: "PEGA_AQUI_TU_CLAVE"   # https://enter.pollinations.ai  (gratuita)
+fal: "PEGA_AQUI_TU_CLAVE"            # https://fal.ai/dashboard/keys  (de pago)

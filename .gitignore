@@ -1,0 +1,15 @@
+# Entorno y caché
+.venv/
+__pycache__/
+.DS_Store
+# Claves personales: NUNCA se suben
+claves.yaml
+# Resultados generados
+imagenes/*
+!imagenes/.gitkeep
+registro/*
+!registro/.gitkeep
+codificacion/*
+!codificacion/.gitkeep
+salidas/*
+!salidas/.gitkeep

@@ -1,0 +1,20 @@
+# Configuración técnica. Las decisiones de investigación viven en protocolo.yaml.
+
+# ---- Modelo de lenguaje (Ollama): agentes A1 y A2 ----
+modelo_texto: "qwen3:14b"
+desactivar_razonamiento: true
+temperatura: 0.2
+
+# ---- Modelo de visión (Ollama): agente A3 ----
+modelo_vision: "qwen3-vl:8b"       # alternativa: gemma3:12b
+
+# ---- Generador de imágenes: Z-Image Turbo por cualquiera de tres vías ----
+generador:
+  via: "local"                     # local | pollinations | fal   (ver generador.py)
+  ancho: 768                       # 1024 = más detalle, más lento
+  alto: 768
+  pasos: 9                         # vía local (en fal, máximo 8; pollinations no lo permite elegir)
+  cuantizacion: 8                  # solo vía local
+  comando_local: "mflux-generate-z-image-turbo"
+  pausa_segundos: 5                # solo pollinations: pausa entre imágenes
+  segundos_maximos: 600            # tiempo máximo por imagen antes de darla por fallida

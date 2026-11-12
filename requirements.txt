@@ -1,0 +1,11 @@
+ollama>=0.5
+pydantic>=2.7
+pyyaml
+pandas
+openpyxl        # hojas de Excel (codificación y reporte)
+tabulate        # tablas del resumen
+pillow          # miniaturas de las imágenes
+requests        # generación por internet (planes B y C)
+
+# El generador de imágenes (mflux) NO se instala aquí: se instala aparte con uv
+# (ver GUIA, paso de instalación), porque usa su propia versión de Python.

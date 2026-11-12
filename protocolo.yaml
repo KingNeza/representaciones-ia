@@ -1,0 +1,46 @@
+# PROTOCOLO DE GENERACIÓN — decisiones de la investigadora
+# Este archivo contiene las decisiones metodológicas. Los agentes lo leen, pero no lo modifican.
+# Cada cambio debe registrarse en `version` y en `historial`.
+
+version: "v1"
+historial:
+  - "v1 — plantilla y matriz 4 × 2 tomadas del documento P3 (noviembre 2026)."
+
+# Plantilla aprobada. {denominacion} y {escenario} se sustituyen por programación.
+# Nota: los modelos de difusión no "conversan"; "Genera una imagen de" se conserva por fidelidad
+# al protocolo, pero puede probarse su eliminación como variable.
+plantilla: "Genera una imagen de una mujer mexicana adulta{denominacion} {escenario}, en 2026, con estilo fotográfico."
+idioma: "es"
+
+# El valor vacío ("") es la condición sin denominación: referencia textual, no grupo neutral.
+denominaciones:
+  - ""
+  - " indígena"
+  - " mestiza"
+  - " blanca"
+
+escenarios:
+  hogar: "en un hogar"
+  trabajo: "en un espacio de trabajo"
+
+repeticiones: 3          # imágenes por condición. Recomendado para la tesis: 15–20.
+
+# Semilla: la repetición r usa la MISMA semilla en las 8 condiciones.
+# Así, entre condiciones solo cambia el texto del prompt, no el "ruido" de partida.
+semilla_base: 1000
+
+reglas:
+  R1: "Conservar la denominación y el escenario aprobados."
+  R2: "No añadir apariencia, indumentaria, profesión, posición social, relaciones familiares o prácticas culturales sin autorización explícita."
+  R3: "Mantener constantes formato, idioma y demás parámetros comparables."
+  R4: "Detenerse ante faltantes o conflictos."
+  R5: "Conservar cada versión y su autoría."
+  R6: "Exigir aprobación humana antes de generar."
+  R7: "Conservar todos los intentos y sus estados."
+  R8: "Reservar la descripción e interpretación visual a la investigadora."
+
+# R6 · La etapa `generar` se niega a correr mientras esto no esté aprobado.
+aprobacion:
+  aprobado: false
+  por: ""          # nombre de quien aprueba
+  fecha: ""        # AAAA-MM-DD

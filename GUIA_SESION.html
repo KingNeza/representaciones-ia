@@ -1,0 +1,156 @@
+<html><head><meta charset="utf-8"><title>Guía de sesión: Representaciones IA</title><style>body,p,li,td,th,h1,h2,h3{font-family:Arial,sans-serif}body{max-width:820px;margin:24px auto;padding:0 16px}body,p,li,td,th{font-size:11pt;line-height:1.5}h1{font-size:18pt}h2{font-size:14pt;margin-top:28px}h3{font-size:12pt}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:4px 6px;vertical-align:top;text-align:left}th{background:#eeeeee}pre{font-family:'Roboto Mono','Courier New',monospace;font-size:10pt;background:#f4f4f4;padding:6px;white-space:pre-wrap}code{font-family:'Roboto Mono','Courier New',monospace;font-size:10pt;background:#f4f4f4}.nota{background:#f6f6f6;border-left:3px solid #888;padding:6px 10px}</style></head><body>
+<h1>Guía de sesión: Representaciones IA</h1>
+<p>Comunidades virtuales en los procesos de globalización · Proyecto colaborativo de la Maestría en Comunicación y Humanidades Digitales · Noviembre de 2026</p>
+
+<h2>1. Propósito</h2>
+<p>El proyecto <i>Agentes auxiliares para estudiar representaciones de mujeres mexicanas en imágenes generativas</i> propone generar imágenes a partir de una plantilla fija, variando la denominación (sin denominación, indígena, mestiza, blanca) y el escenario (hogar, espacio de trabajo), y analizar los resultados con apoyo de tres agentes auxiliares. Esta guía pone en funcionamiento ese diseño completo en las computadoras del laboratorio, con modelos que se ejecutan localmente.</p>
+<p>La guía no supone conocimientos de programación. Para los conceptos básicos (terminal, entorno virtual, JSON, alucinación), consúltese la sección 2 de la guía de la Contramáquina.</p>
+
+<h2>2. Modelos elegidos</h2>
+<table>
+<tr><th>Función</th><th>Modelo</th><th>Herramienta</th><th>Motivo</th></tr>
+<tr><td>Generar imágenes</td><td>Z-Image Turbo (6B, Alibaba Tongyi Lab)</td><td>mflux</td><td>Orientado a imágenes fotorrealistas, coherente con «estilo fotográfico». Licencia abierta (Apache 2.0). Rápido: 9 pasos por imagen. mflux está optimizado para los procesadores Apple Silicon y permite fijar la semilla.</td></tr>
+<tr><td>Agentes A1 y A2 (texto)</td><td><code>qwen3:14b</code></td><td>Ollama</td><td>El mismo que se usa en la Contramáquina.</td></tr>
+<tr><td>Agente A3 (visión)</td><td><code>qwen3-vl:8b</code></td><td>Ollama</td><td>Recibe imágenes y responde con estructura fija. Alternativa: <code>gemma3:12b</code>.</td></tr>
+</table>
+<p class="nota">Ollama ofreció en 2026 una función experimental de generación de imágenes, pero se reportó retirada en versiones posteriores; por eso la generación se hace con mflux, que es estable y permite automatizar el proceso.</p>
+<p><b>Requisitos del equipo:</b> Mac con procesador Apple Silicon (M1 o posterior), 16 GB de memoria como mínimo (32 GB recomendados) y unos 40 GB libres en disco para los modelos. La primera vez que se usa cada modelo se descarga desde Hugging Face, por lo que la red de la universidad debe permitir el acceso a <code>huggingface.co</code>.</p>
+
+<h3>2.1 Tres vías para generar con el mismo modelo</h3>
+<p>Si mflux no puede instalarse en el laboratorio, el proyecto puede generar por internet. Las tres vías usan Z-Image Turbo, de modo que cambiar de vía no cambia el objeto de estudio. Se elige con una sola línea de <code>config.yaml</code>: <code>via: "local"</code>, <code>"pollinations"</code> o <code>"fal"</code>.</p>
+<table>
+<tr><th>Vía</th><th>Costo</th><th>Requisitos</th><th>Observaciones</th></tr>
+<tr><td>A · <code>local</code></td><td>Gratuita</td><td>mflux instalado; 16 GB de RAM; descarga inicial del modelo</td><td>El corpus no sale de la computadora. Control total de pasos y semilla.</td></tr>
+<tr><td>B · <code>pollinations</code></td><td>Gratuita</td><td>Cuenta y clave en <a href="https://enter.pollinations.ai">enter.pollinations.ai</a></td><td>Servicio comunitario con límite de solicitudes: el programa hace una pausa entre imágenes. Adecuado para la fase de prueba.</td></tr>
+<tr><td>C · <code>fal</code></td><td>≈ 0.003 USD por imagen de 768 × 768 (24 imágenes ≈ 0.07 USD)</td><td>Cuenta en <a href="https://fal.ai">fal.ai</a> con tarjeta y clave</td><td>Servicio comercial estable. Registra si su filtro de contenido intervino.</td></tr>
+</table>
+<p class="nota">En las vías B y C el programa desactiva la «mejora automática del prompt» que ofrecen estos servicios. Si el servicio reescribiera el prompt, se añadirían atributos no autorizados (R2) y se perdería la comparabilidad (R3). La vía usada queda registrada en cada fila de <code>registro/generaciones.csv</code>; las imágenes de vías distintas no deben mezclarse en un mismo análisis sin señalarlo.</p>
+
+<h2>3. Correspondencia entre la propuesta y el código</h2>
+<table>
+<tr><th>Elemento del documento P3</th><th>Archivo</th><th>¿Usa modelo?</th></tr>
+<tr><td>Plantilla, denominaciones, escenarios, reglas R1–R8, aprobación</td><td><code>protocolo.yaml</code></td><td>No: lo escribe la investigadora</td></tr>
+<tr><td>A1 · Formulación</td><td><code>agentes/formulador.py</code></td><td>Sí. Señala ambigüedades y pregunta; no modifica el protocolo</td></tr>
+<tr><td>Sustitución de términos y combinaciones</td><td><code>prompts.py</code></td><td>No. R1 y R3 se cumplen por construcción</td></tr>
+<tr><td>A2 · Revisión de correspondencia</td><td><code>agentes/revisor.py</code></td><td>Sí, más una comprobación literal sin modelo</td></tr>
+<tr><td>R6 · Aprobación humana antes de generar</td><td><code>pipeline.py</code>, etapa <code>generar</code></td><td>No. El programa se detiene si el protocolo no está aprobado</td></tr>
+<tr><td>Generación y registro (R7)</td><td><code>generador.py</code>, <code>registro/generaciones.csv</code></td><td>Generador de imágenes</td></tr>
+<tr><td>A3 · Contraste visual</td><td><code>agentes/contraste.py</code></td><td>Sí, solo para escenario y estilo. Nacionalidad, identidad, edad, género y año se marcan como no verificables por programa</td></tr>
+<tr><td>R8 · Descripción e interpretación de la investigadora</td><td><code>codebook_visual.yaml</code>, <code>codificacion/codificacion_imagenes.xlsx</code></td><td>No</td></tr>
+<tr><td>Conteos por condición</td><td><code>reporte.py</code></td><td>No</td></tr>
+<tr><td>Acuerdo entre codificadoras</td><td><code>validacion/kappa.py</code></td><td>No</td></tr>
+</table>
+
+<h3>3.1 Archivos que edita la investigadora</h3>
+<table>
+<tr><th>Archivo</th><th>Contenido</th></tr>
+<tr><td><code>protocolo.yaml</code></td><td>Las decisiones metodológicas: plantilla, valores, número de repeticiones, semilla, reglas y aprobación. Cada cambio se registra en <code>version</code> e <code>historial</code>.</td></tr>
+<tr><td><code>codebook_visual.yaml</code></td><td>Las categorías para describir las imágenes. Las incluidas (escenario, actividad, indumentaria, temporalidad, signos de «lo mexicano») son una plantilla que debe redefinirse desde el marco teórico.</td></tr>
+<tr><td><code>codificacion/codificacion_imagenes.xlsx</code></td><td>Hoja de trabajo: una fila por imagen con su miniatura y listas desplegables para cada categoría. Un clic en el identificador abre la imagen completa.</td></tr>
+<tr><td><code>config.yaml</code></td><td>Ajustes técnicos: modelos, tamaño de imagen, pasos.</td></tr>
+</table>
+
+<h2>4. Instalación</h2>
+<h3>4.1 Para el laboratorio (una vez por equipo)</h3>
+<p>Los pasos 1 y 2 de la guía de la Contramáquina (Ollama y <code>qwen3:14b</code>) deben estar hechos. Además:</p>
+<p><b>a) Modelo de visión</b></p>
+<pre>ollama pull qwen3-vl:8b</pre>
+<p><b>b) Instalador uv y mflux.</b> uv es un instalador de herramientas de Python que mantiene mflux aislado del resto del sistema.</p>
+<pre>curl -LsSf https://astral.sh/uv/install.sh | sh</pre>
+<p>Cierre la terminal, abra una nueva y escriba:</p>
+<pre>uv tool install --upgrade mflux</pre>
+<p><b>c) Primera imagen de prueba.</b> La primera ejecución descarga el modelo (varios GB) y puede tardar bastante; las siguientes son mucho más rápidas.</p>
+<pre>mflux-generate-z-image-turbo --prompt "una taza de café sobre una mesa de madera, fotografía" --width 768 --height 768 --seed 42 --steps 9 -q 8</pre>
+<p>Al terminar aparece un archivo <code>.png</code> en la carpeta donde se ejecutó el comando. Si la imagen se ve bien, el generador está listo.</p>
+
+<h3>4.1 bis · Si mflux no puede instalarse: vía pollinations</h3>
+<ol>
+<li>Cree una cuenta en <a href="https://enter.pollinations.ai">enter.pollinations.ai</a> y copie su clave.</li>
+<li>En la carpeta del proyecto, duplique <code>claves_ejemplo.yaml</code> y renombre la copia como <code>claves.yaml</code>. Ábrala y pegue la clave entre las comillas de la línea <code>pollinations</code>. Guarde con Cmd + S.</li>
+<li>En <code>config.yaml</code>, cambie <code>via: "local"</code> por <code>via: "pollinations"</code> y guarde.</li>
+<li>Pruebe con una sola imagen (una vez aprobado el protocolo, Actividad 3): <code>python pipeline.py --etapa generar --limite 1</code></li>
+</ol>
+<p class="nota"><code>claves.yaml</code> es personal: no debe compartirse ni incluirse al enviar el proyecto. Para la vía fal el procedimiento es el mismo, con la clave en la línea <code>fal</code> y <code>via: "fal"</code>.</p>
+
+<h3>4.2 El proyecto</h3>
+<ol>
+<li>Descomprima <code>representaciones_ia.zip</code>, mueva la carpeta a Documentos y ábrala en VS Code (File → Open Folder).</li>
+<li>Abra la terminal (Terminal → New Terminal) y cree el entorno:
+<pre>python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt</pre></li>
+<li>Pruebe los dos modelos de Ollama:
+<pre>python llm.py
+python llm.py ruta/a/una/imagen.png</pre>
+El primero responde con una definición; el segundo describe la imagen indicada (sirve la taza de café del paso anterior).</li>
+</ol>
+
+<h2>5. Desarrollo de la sesión</h2>
+<h3>Actividad 1. Recorrido simulado (10 min)</h3>
+<pre>REPRESENTACIONES_SIMULAR=1 python pipeline.py --etapa prompts
+REPRESENTACIONES_SIMULAR=1 python pipeline.py --etapa revisar</pre>
+<p>Al intentar la etapa <code>generar</code>, el programa se detiene con el aviso de la regla R6: es el comportamiento esperado. La aprobación es una decisión humana y queda registrada.</p>
+
+<h3>Actividad 2. A1 y A2 sobre la plantilla real (15 min)</h3>
+<pre>python pipeline.py --etapa formular
+python pipeline.py --etapa prompts
+python pipeline.py --etapa revisar</pre>
+<p>A1 deja sus observaciones en <code>registro/a1_propuesta_v1.json</code> y A2 su informe en <code>registro/a2_revision.csv</code>. Se discuten en grupo: ¿alguna observación justifica cambiar la plantilla? Si se cambia, se actualiza <code>version</code> en <code>protocolo.yaml</code> y se repiten las tres etapas.</p>
+
+<h3>Actividad 3. Aprobación y generación (25 min)</h3>
+<p>En <code>protocolo.yaml</code>, la investigadora completa:</p>
+<pre>aprobacion:
+  aprobado: true
+  por: "Nombre de la investigadora"
+  fecha: "2026-11-13"</pre>
+<p>Después se genera una prueba de cuatro imágenes y, si todo funciona, el lote completo (24 imágenes con 3 repeticiones):</p>
+<pre>python pipeline.py --etapa generar --limite 4
+python pipeline.py --etapa generar</pre>
+<p>La etapa no repite imágenes ya generadas: si se interrumpe, basta con volver a ejecutarla. Cada intento, incluidos los fallidos, queda en <code>registro/generaciones.csv</code>.</p>
+
+<h3>Actividad 4. Contraste visual con A3 (15 min)</h3>
+<pre>python pipeline.py --etapa contrastar</pre>
+<p>En <code>registro/a3_contraste.csv</code> cada imagen tiene una fila por requisito. Solo el escenario y el estilo fotográfico son evaluados por el modelo; el resto aparece como <code>no_verificable_visualmente</code>. Los objetos no solicitados se registran aparte, sin considerarse incumplimientos.</p>
+
+<h3>Actividad 5. Codificación humana (30 min)</h3>
+<pre>python pipeline.py --etapa codificar</pre>
+<p>Se abre <code>codificacion/codificacion_imagenes.xlsx</code> en Excel. La pestaña <i>instrucciones</i> contiene las definiciones. En la pestaña <i>codificacion</i>, cada categoría de un solo valor tiene una lista desplegable; en <code>SIMBOLOS</code> se escriben todos los signos visibles, separados por punto y coma. La columna <code>memo</code> recoge dudas y observaciones.</p>
+<p class="nota">Si después se generan más imágenes, la etapa <code>codificar</code> las agrega al final de la misma hoja sin borrar lo ya codificado.</p>
+
+<h3>Actividad 6. Reporte (10 min)</h3>
+<pre>python pipeline.py --etapa reporte</pre>
+<p><code>salidas/reporte.xlsx</code> contiene, para cada categoría, una tabla de denominación × escenario con el número de imágenes en cada valor. La comparación central es la condición sin denominación frente a las otras tres: muestra qué configuración visual asigna el generador por defecto a «mujer mexicana».</p>
+
+<h2>6. Notas metodológicas</h2>
+<ul>
+<li><b>Semilla.</b> La repetición 1 usa la misma semilla en las ocho condiciones, y lo mismo las repeticiones 2 y 3. Entre condiciones solo cambia el texto del prompt, lo que permite atribuir las diferencias a la denominación o al escenario.</li>
+<li><b>Tamaño de la muestra.</b> Tres repeticiones bastan para probar el procedimiento, no para afirmar recurrencias. Para la tesis se recomiendan entre 15 y 20 por condición (120 a 160 imágenes), modificando <code>repeticiones</code> en el protocolo.</li>
+<li><b>Idioma.</b> El protocolo usa español. Los generadores suelen entrenarse sobre todo con textos en inglés y chino, por lo que el idioma del prompt puede influir en el resultado y es candidato a variable de estudio.</li>
+<li><b>Fórmula conversacional.</b> «Genera una imagen de» es una fórmula propia de los asistentes conversacionales; los modelos de difusión la leen como parte de la descripción. Puede conservarse por fidelidad al protocolo o probarse su eliminación.</li>
+<li><b>Validación.</b> Para medir la fiabilidad del libro de códigos, una segunda persona codifica una copia de la hoja sin ver la primera, y se ejecuta:
+<pre>python validacion/kappa.py codificacion/codificacion_imagenes.xlsx codificacion/codificacion_segunda.xlsx ESCENARIO</pre></li>
+</ul>
+
+<h2>7. Problemas frecuentes</h2>
+<table>
+<tr><th>Síntoma</th><th>Causa</th><th>Solución</th></tr>
+<tr><td><code>No se encontró mflux-generate-z-image-turbo</code></td><td>mflux no está instalado o la terminal se abrió antes de instalarlo</td><td>Instalar (4.1 b) y abrir una terminal nueva</td></tr>
+<tr><td><code>Falta claves.yaml</code> o <code>Falta la clave</code></td><td>No se creó el archivo de claves o la clave no se pegó</td><td>Ver 4.1 bis</td></tr>
+<tr><td><code>pollinations respondió 401</code> o <code>403</code></td><td>Clave incorrecta o vencida</td><td>Copiar de nuevo la clave desde enter.pollinations.ai</td></tr>
+<tr><td><code>pollinations respondió 429</code></td><td>Demasiadas solicitudes seguidas</td><td>El programa reintenta solo; si persiste, subir <code>pausa_segundos</code> en <code>config.yaml</code></td></tr>
+<tr><td><code>✋ R6: el protocolo no está aprobado</code></td><td>Falta la aprobación</td><td>Completar <code>aprobacion</code> en <code>protocolo.yaml</code></td></tr>
+<tr><td>La primera imagen tarda muchos minutos</td><td>Descarga del modelo</td><td>Esperar; solo ocurre una vez por equipo</td></tr>
+<tr><td>Error de memoria al generar</td><td>Memoria insuficiente</td><td>En <code>config.yaml</code>, bajar <code>ancho</code> y <code>alto</code> a 512 o cuantización a 4</td></tr>
+<tr><td>A3 tarda o se cicla</td><td>Modelo de visión pesado o imagen grande</td><td>Probar <code>gemma3:12b</code> en <code>config.yaml</code>, o usar <code>--limite</code></td></tr>
+<tr><td>Las miniaturas no aparecen en Numbers</td><td>Numbers no muestra imágenes ancladas a celdas</td><td>Abrir la hoja en Excel, o usar el clic sobre el identificador</td></tr>
+</table>
+
+<h2>Fuentes</h2>
+<ul>
+<li><a href="https://github.com/filipstrand/mflux">mflux (repositorio oficial)</a></li>
+<li><a href="https://registry.ollama.ai/blog/image-generation">Ollama: Image generation (experimental)</a></li>
+<li><a href="https://enter.pollinations.ai/api/docs/llm.txt">Pollinations: documentación de la API</a></li>
+<li><a href="https://fal.ai/docs/model-api-reference/image-generation-api/z-image-turbo.md">fal.ai: API de Z-Image Turbo</a></li>
+<li><a href="https://localaimaster.com/blog/ollama-image-generation-models">Local AI Master: estado de la generación de imágenes en Ollama</a></li>
+</ul>
+</body></html>

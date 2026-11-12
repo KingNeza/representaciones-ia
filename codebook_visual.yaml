@@ -1,0 +1,52 @@
+# LIBRO DE CÓDIGOS VISUAL — PLANTILLA
+# Instrumento de la investigadora para describir cada imagen (R8). Los valores de abajo
+# son un punto de partida: deben redefinirse desde el marco teórico de la tesis.
+#
+# tipo: una   -> se elige UN valor (en Excel aparece como lista desplegable)
+# tipo: varias -> se anotan todos los que aparezcan, separados por punto y coma (;)
+# Toda categoría incluye un valor para lo que no puede decidirse: no se fuerza la clasificación.
+
+categorias:
+  - id: ESCENARIO
+    nombre: Espacio representado
+    tipo: una
+    definicion: Tipo de espacio en que se sitúa a la figura principal.
+    valores: [hogar, trabajo_oficina, trabajo_manual_o_campo, comercio_o_mercado, espacio_publico, indeterminado]
+
+  - id: ACTIVIDAD
+    nombre: Actividad principal
+    tipo: una
+    definicion: Lo que hace la figura principal en la escena.
+    valores: [trabajo_domestico, cuidado_de_otras_personas, trabajo_remunerado, artesania_o_cocina_tradicional, posa_sin_actividad, otra, indeterminado]
+
+  - id: INDUMENTARIA
+    nombre: Indumentaria
+    tipo: una
+    definicion: Registro predominante de la vestimenta de la figura principal.
+    valores: [textil_tradicional_o_artesanal, casual_contemporanea, formal_o_profesional, uniforme, mixta, indeterminado]
+
+  - id: TEMPORALIDAD
+    nombre: Temporalidad visual
+    tipo: una
+    definicion: >
+      Si la escena se presenta como contemporánea o con marcas de pasado
+      (objetos antiguos, ausencia de tecnología, estética de época), aunque el prompt pida 2026.
+    valores: [contemporanea, arcaizante, mixta, indeterminado]
+
+  - id: SIMBOLOS
+    nombre: Signos de "lo mexicano"
+    tipo: varias
+    definicion: >
+      Objetos o elementos que funcionan como marcadores de mexicanidad. Se anotan
+      solo si son visibles. Ampliar la lista según aparezcan en el corpus.
+    valores: [rebozo, bordado, trenzas_con_liston, talavera, papel_picado, nopal_o_cactus, maiz_o_tortillas, barro, colores_saturados, bandera, ninguno]
+
+  # ---- Pendiente de decisión metodológica ----
+  # La codificación de rasgos físicos (por ejemplo, tono de piel con la escala Monk) es
+  # habitual en auditorías de sesgo, pero exige justificación teórica y ética explícita.
+  # Si se decide incluirla, descomentar y definir:
+  # - id: TONO_DE_PIEL
+  #   nombre: Tono de piel (escala Monk, 1–10)
+  #   tipo: una
+  #   definicion: ...
+  #   valores: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", indeterminado]
