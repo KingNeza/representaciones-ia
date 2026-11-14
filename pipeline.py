@@ -89,7 +89,9 @@ def etapa_generar(args):
     plan = pd.read_csv(REG / "prompts.csv", encoding="utf-8-sig")
     ruta_reg = REG / "generaciones.csv"
     previas = pd.read_csv(ruta_reg, encoding="utf-8-sig") if ruta_reg.exists() else pd.DataFrame(columns=["id_imagen", "estado"])
-    hechas = set(previas.loc[previas["estado"] == "ok", "id_imagen"])
+    ok_prev = previas[previas["estado"] == "ok"]
+    # "ya generada" = registrada como ok Y con su archivo presente en imagenes/
+    hechas = {i for i, a in zip(ok_prev["id_imagen"], ok_prev.get("archivo", [])) if (RAIZ / str(a)).exists()}
     pendientes = plan[~plan["id_imagen"].isin(hechas)]
     if args.limite:
         pendientes = pendientes.head(args.limite)
@@ -117,7 +119,13 @@ def _generadas_ok() -> pd.DataFrame:
     if not ruta.exists():
         sys.exit("Todavía no hay imágenes. Corre primero la etapa `generar`.")
     g = pd.read_csv(ruta, encoding="utf-8-sig")
-    return g[g["estado"] == "ok"].drop_duplicates("id_imagen", keep="last")
+    g = g[g["estado"] == "ok"].drop_duplicates("id_imagen", keep="last")
+    existe = g["archivo"].map(lambda a: (RAIZ / str(a)).exists())
+    if (~existe).any():
+        print(f"  ⚠ {(~existe).sum()} imágenes del registro no están en imagenes/ y se omiten:"
+              f" {', '.join(g.loc[~existe, 'id_imagen'].head(5))}{' ...' if (~existe).sum() > 5 else ''}")
+        print("    Para volver a generarlas: python pipeline.py --etapa generar")
+    return g[existe]
 
 
 def etapa_contrastar(args):
