@@ -1,5 +1,10 @@
 # Configuración técnica. Las decisiones de investigación viven en protocolo.yaml.
 
+# ---- ¿Dónde corren los agentes A1, A2 y A3? ----
+llm_via: "ollama"                  # ollama (local) | pollinations (por internet, usa claves.yaml)
+modelo_texto_pollinations: "openai"
+modelo_vision_pollinations: "openai"   # alternativas con visión: gemini, claude
+
 # ---- Modelo de lenguaje (Ollama): agentes A1 y A2 ----
 modelo_texto: "qwen3:14b"
 desactivar_razonamiento: true

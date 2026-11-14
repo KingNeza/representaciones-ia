@@ -22,7 +22,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from llm import CONFIG, SIMULAR
+from llm import CONFIG, SIMULAR, describir_modelo
 from prompts import cargar_protocolo, lote
 
 RAIZ = Path(__file__).parent
@@ -38,7 +38,7 @@ def ahora():
 
 def etapa_formular(_):
     from agentes.formulador import revisar_plantilla
-    print(f"[A1] Formulador  (modelo: {CONFIG['modelo_texto']})")
+    print(f"[A1] Formulador  (modelo: {describir_modelo()})")
     p = cargar_protocolo()
     r = revisar_plantilla(p)
     r.update({"version_protocolo": p["version"], "fecha": ahora(), "autoria": "A1"})
@@ -61,7 +61,7 @@ def etapa_prompts(_):
 
 def etapa_revisar(_):
     from agentes.revisor import revisar
-    print(f"[A2] Revisor  (modelo: {CONFIG['modelo_texto']})")
+    print(f"[A2] Revisor  (modelo: {describir_modelo()})")
     p = cargar_protocolo()
     unicos = pd.read_csv(REG / "prompts.csv", encoding="utf-8-sig").drop_duplicates("condicion")
     filas = []
@@ -130,7 +130,7 @@ def _generadas_ok() -> pd.DataFrame:
 
 def etapa_contrastar(args):
     from agentes.contraste import contrastar
-    print(f"[A3] Contraste visual  (modelo: {CONFIG['modelo_vision']})")
+    print(f"[A3] Contraste visual  (modelo: {describir_modelo(vision=True)})")
     p = cargar_protocolo()
     ruta = REG / "a3_contraste.csv"
     previas = pd.read_csv(ruta, encoding="utf-8-sig") if ruta.exists() else pd.DataFrame(columns=["id_imagen"])
